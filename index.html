@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Controle de Estudos</title>
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+    <header class="navbar">
+        <div class="container nav-content">
+            <h1>Controle de Estudos</h1>
+            <div class="nav-painel">
+                <div class="stats-badge">
+                    Total: <strong id="total-horas-globais">0</strong> horas
+                </div>
+                <label class="switch-tema" for="checkbox-tema" title="Alternar Modo Claro/Escuro">
+                    <input type="checkbox" id="checkbox-tema">
+                    <span class="slider-tema"></span>
+                    <span class="icone sol">☀️</span>
+                    <span class="icone lua">🌙</span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="toolbar">
+            <h2>Meu Progresso</h2>
+            <button id="btn-novo" class="btn btn-primario">+ Nova Disciplina</button>
+        </section>
+
+        <section id="lista-vazia" class="estado-vazio escondido">
+            <div class="icone-vazio">📚</div>
+            <h3>Sua grade está vazia</h3>
+            <p>Cadastre sua primeira disciplina para começar a controlar seus estudos.</p>
+        </section>
+
+        <section id="grade-disciplinas" class="grade-cards">
+            </section>
+    </main>
+
+    <dialog id="modal-cadastro">
+        <div class="modal-cabecalho">
+            <h2 id="titulo-modal">Cadastrar Disciplina</h2>
+            <button id="btn-fechar-modal" class="btn-fechar" aria-label="Fechar">&times;</button>
+        </div>
+        
+        <form id="form-disciplina">
+            <input type="hidden" id="id-disciplina">
+            
+            <div class="grupo-input">
+                <label for="nome">Nome da Disciplina</label>
+                <input type="text" id="nome" required placeholder="Preencha o nome da disciplina">
+            </div>
+
+            <div class="grupo-input">
+                <label for="professor">Professor Responsável</label>
+                <input type="text" id="professor" required placeholder="Preencha o nome do professor">
+            </div>
+
+            <div class="linha-inputs">
+                <div class="grupo-input">
+                    <label for="carga">Carga Horária</label>
+                    <input type="number" id="carga" min="1" required placeholder="Ex: 80">
+                </div>
+                <div class="grupo-input">
+                    <label for="area">Área do Conhecimento</label>
+                    <select id="area" required>
+                        <option value="" disabled selected>Selecione...</option>
+                        <option value="Exatas">Exatas</option>
+                        <option value="Humanas">Humanas</option>
+                        <option value="Biológicas">Biológicas</option>
+                        <option value="Tecnologia">Tecnologia</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="modal-rodape">
+                <button type="submit" class="btn btn-primario w-100">Salvar Dados</button>
+            </div>
+        </form>
+    </dialog>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

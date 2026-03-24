@@ -1,0 +1,362 @@
+/* Cores do site - coloquei em variáveis pra ficar mais fácil de mudar depois se o professor pedir */
+:root {
+    --cor-fundo: #f3f4f6;
+    --cor-superficie: #ffffff;
+    --cor-primaria: #2563eb;
+    --cor-primaria-hover: #1d4ed8;
+    --cor-texto: #1f2937;
+    --cor-texto-suave: #6b7280;
+    --cor-borda: #e5e7eb;
+    --cor-perigo: #dc2626;
+    --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --raio: 10px;
+}
+
+/* Cores pro modo escuro - basicamente troca o fundo claro pelo escuro */
+body.modo-escuro {
+    --cor-fundo: #111827;
+    --cor-superficie: #1f2937;
+    --cor-texto: #f9fafb;
+    --cor-texto-suave: #9ca3af;
+    --cor-borda: #374151;
+}
+
+* { 
+    margin: 0;
+    padding: 0; 
+    box-sizing: border-box; 
+    font-family: 'Segoe UI', system-ui, sans-serif; 
+}
+
+body { 
+    background-color: var(--cor-fundo); 
+    color: var(--cor-texto); 
+    line-height: 1.6; 
+}
+
+.container { 
+    max-width: 1200px; 
+    margin: 0 auto; 
+    padding: 0 1.5rem; 
+}
+
+/* Barra do topo - usando flexbox pra alinhar as coisas sem sofrer */
+.navbar { 
+    background: var(--cor-superficie); 
+    box-shadow: var(--sombra); 
+    padding: 1rem 0; 
+    margin-bottom: 2rem; 
+}
+
+.nav-content { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    flex-wrap: wrap; 
+    gap: 1rem; 
+}
+
+.nav-painel { 
+    display: flex; 
+    gap: 1rem; 
+    align-items: center; 
+}
+
+#input-busca { 
+    padding: 0.5rem 1rem; 
+    border: 1px solid var(--cor-borda); 
+    border-radius: 20px; 
+    outline: none; 
+    transition: border-color 0.3s; 
+}
+
+#input-busca:focus { 
+    border-color: var(--cor-primaria); 
+}
+
+.stats-badge { 
+    background: #dbeafe; 
+    color: #1e40af; 
+    padding: 0.5rem 1rem; 
+    border-radius: 20px; 
+    font-weight: 500; 
+    font-size: 0.9rem; 
+}
+
+.toolbar { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 2rem; 
+}
+
+/* Estilizando os botões pra não ficarem com a cara padrão e feia do HTML */
+
+.btn { 
+    padding: 0.6rem 1.2rem; 
+    border: none; 
+    border-radius: 6px; 
+    cursor: pointer; 
+    font-weight: 600; 
+    transition: all 0.2s; 
+}
+
+.btn-primario { 
+    background: var(--cor-primaria); 
+    color: white; 
+}
+
+.btn-primario:hover { 
+    background: var(--cor-primaria-hover); 
+    transform: translateY(-1px); 
+}
+
+.btn-outline { 
+    background: transparent; 
+    border: 1px solid var(--cor-borda); 
+    color: var(--cor-texto); 
+}
+
+.btn-outline:hover { 
+    border-color: var(--cor-primaria); 
+    color: var(--cor-primaria); 
+}
+
+.w-100 { 
+    width: 100%; 
+}
+
+/* Aqui fica a lista de matérias. Esse grid já se arruma sozinho na tela */
+.grade-cards { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
+    gap: 1.5rem; 
+}
+
+.card { 
+    background: var(--cor-superficie); 
+    border-radius: var(--raio); 
+    padding: 1.5rem; 
+    box-shadow: var(--sombra); 
+    display: flex; 
+    flex-direction: column; 
+    position: relative; 
+    overflow: hidden; 
+    animation: fadeIn 0.4s ease-out; 
+}
+
+/* Aquela barrinha azul no topo do card que vai enchendo conforme a gente estuda */
+.card-indicador { 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    height: 4px; 
+    background: var(--cor-primaria); 
+    transition: width 0.5s ease; 
+}
+
+.card-cabecalho { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: flex-start; 
+    margin-bottom: 1rem; 
+    margin-top: 0.5rem; 
+}
+
+.tag-area { 
+    font-size: 0.75rem; 
+    font-weight: bold; 
+    text-transform: uppercase; 
+    background: var(--cor-fundo); 
+    padding: 0.3rem 0.6rem; 
+    border-radius: 4px; 
+    color: var(--cor-texto-suave); 
+}
+
+.acoes-card button { 
+    background: none; 
+    border: none; 
+    font-size: 1.1rem; 
+    cursor: pointer; 
+    margin-left: 0.5rem; 
+    color: var(--cor-texto-suave); 
+    transition: color 0.2s; 
+}
+
+.acoes-card .btn-editar:hover { 
+    color: var(--cor-primaria); 
+}
+
+.acoes-card .btn-excluir:hover { 
+    color: var(--cor-perigo); 
+}
+
+.card-info h3 { 
+    font-size: 1.25rem; 
+    margin-bottom: 0.2rem; 
+}
+
+.card-info p { 
+    color: var(--cor-texto-suave); 
+    font-size: 0.9rem; 
+    margin-bottom: 1rem; 
+}
+
+.progresso-texto { 
+    display: flex; 
+    justify-content: space-between; 
+    font-size: 0.85rem; 
+    margin-bottom: 1.5rem; 
+    font-weight: 500; 
+}
+
+/* A janelinha de cadastro (Modal) que aparece por cima de tudo */
+dialog { 
+    margin: auto; 
+    border: none; 
+    border-radius: var(--raio); 
+    padding: 2rem; 
+    width: 90%; 
+    max-width: 500px; 
+    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); 
+}
+
+dialog::backdrop { 
+    background: rgba(0,0,0,0.5); 
+    backdrop-filter: blur(3px); 
+}
+
+.modal-cabecalho { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    margin-bottom: 1.5rem; 
+}
+
+.btn-fechar { 
+    background: none; 
+    border: none; 
+    font-size: 1.8rem; 
+    cursor: pointer; 
+    color: var(--cor-texto-suave); 
+}
+
+.grupo-input { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.4rem; 
+    margin-bottom: 1rem; 
+}
+
+.linha-inputs { 
+    display: grid; 
+    grid-template-columns: 1fr 1fr; 
+    gap: 1rem; 
+}
+
+label { 
+    font-size: 0.9rem; 
+    font-weight: 500; 
+}
+
+input, select { 
+    padding: 0.6rem; 
+    border: 1px solid var(--cor-borda); 
+    border-radius: 6px; 
+    outline: none; 
+}
+input:focus, select:focus { 
+    border-color: var(--cor-primaria); 
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); 
+}
+
+.estado-vazio { 
+    text-align: center; 
+    padding: 4rem 2rem; 
+    color: var(--cor-texto-suave); 
+}
+.icone-vazio { 
+    font-size: 4rem; 
+    margin-bottom: 1rem; 
+    opacity: 0.5; 
+}
+.escondido { 
+    display: none !important; 
+}
+
+@keyframes fadeIn { 
+    from { 
+        opacity: 0; 
+        transform: translateY(10px); 
+    } 
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    } 
+}
+
+/* Aquele botão de ligar/desligar o modo escuro com emoji. Deu um trabalhinho fazer a bolinha mexer! */
+.switch-tema { 
+    position: relative; 
+    display: inline-block; 
+    width: 60px; 
+    height: 30px; 
+    margin-left: 10px; 
+}
+
+.switch-tema input { 
+    opacity: 0; 
+    width: 0; 
+    height: 0; 
+}
+
+.slider-tema { 
+    position: absolute; 
+    cursor: pointer; 
+    top: 0; 
+    left: 0; 
+    right: 0; 
+    bottom: 0; 
+    background-color: #cbd5e1; 
+    transition: .4s; 
+    border-radius: 30px; 
+}
+
+.slider-tema:before { 
+    position: absolute; 
+    content: ""; 
+    height: 22px; 
+    width: 22px; 
+    left: 4px; 
+    bottom: 4px; 
+    background-color: white; 
+    transition: .4s; 
+    border-radius: 50%; 
+    z-index: 2; 
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+}
+
+.switch-tema input:checked + .slider-tema { 
+    background-color: var(--cor-primaria); 
+}
+
+.switch-tema input:checked + .slider-tema:before { 
+    transform: translateX(30px); 
+}
+
+.switch-tema .icone { 
+    position: absolute; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    font-size: 14px; 
+    z-index: 1; 
+    user-select: none; 
+}
+
+.switch-tema .sol { 
+    right: 8px; 
+}
+
+.switch-tema .lua { 
+    left: 8px; 
+}
