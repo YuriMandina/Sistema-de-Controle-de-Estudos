@@ -88,5 +88,10 @@ Para grades curriculares extensas, o sistema conta com um motor de busca em temp
 
 ![image10](./assets/images/image10.png)
 
+### 8: Responsividade
+Aqui não temos um passo a mais, porém fica o print também do ajuste de responsividade para telas menores
+
+![image11](./assets/images/image11.png)
+
 ---
 **Desenvolvido por:** Yuri Felippe Portela de Assis Mandina - RU 5473356
