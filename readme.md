@@ -2,6 +2,9 @@
 
 Este é um sistema de front-end desenvolvido para organizar disciplinas acadêmicas e monitorar o progresso de estudos de forma visual. O projeto foi construído utilizando HTML, CSS e JavaScript puro, com foco em performance e persistência de dados local.
 
+Acesse o projeto também pelo deploy no Github Pages:
+[Sistema de Controle de Estudos](https://yurimandina.github.io/Sistema-de-Controle-de-Estudos/)
+
 ---
 
 ## Arquitetura e Organização
