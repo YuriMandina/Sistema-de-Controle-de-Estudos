@@ -40,7 +40,7 @@ body {
     padding: 0 1.5rem; 
 }
 
-/* Barra do topo - usando flexbox pra alinhar as coisas sem sofrer */
+/* Barra do topo - usando flexbox pra alinhamento */
 .navbar { 
     background: var(--cor-superficie); 
     box-shadow: var(--sombra); 

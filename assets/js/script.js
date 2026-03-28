@@ -91,11 +91,16 @@ function mostrarNaTela() {
     gradeDisciplinas.innerHTML = ''; // Limpa a tela antes de desenhar
     let totalHoras = 0;
 
-    // Mostra ou esconde a mensagem de lista vazia
-    if (listaDisciplinas.length == 0) {
-        document.getElementById('lista-vazia').style.display = 'block';
+    // Seleciona a div de estado vazio uma única vez para otimizar o processamento
+    const divListaVazia = document.getElementById('lista-vazia');
+
+    // Verifica se o tamanho do array de disciplinas é igual a zero
+    if (listaDisciplinas.length === 0) {
+        // Se estiver vazio, remove a classe 'escondido' para exibir a div com a mensagem na tela
+        divListaVazia.classList.remove('escondido');
     } else {
-        document.getElementById('lista-vazia').style.display = 'none';
+        // Se tiver itens no array, adiciona a classe 'escondido' para ocultar a mensagem da tela
+        divListaVazia.classList.add('escondido');
     }
 
     // Passa por cada disciplina e cria o HTML do card
