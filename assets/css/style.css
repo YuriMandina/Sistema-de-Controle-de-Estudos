@@ -1,12 +1,16 @@
-/* Cores do site - coloquei em variáveis pra ficar mais fácil de mudar depois se o professor pedir */
+/* ==========================================================================
+   CONFIGURAÇÕES INICIAIS E VARIÁVEIS
+   ========================================================================== */
+
+/* Cores do site */
 :root {
     --cor-fundo: #f3f4f6;
-    --cor-superficie: #ffffff;
+    --cor-superficie: #e4e9ea;
     --cor-primaria: #2563eb;
     --cor-primaria-hover: #1d4ed8;
     --cor-texto: #1f2937;
     --cor-texto-suave: #6b7280;
-    --cor-borda: #e5e7eb;
+    --cor-borda: #becadf;
     --cor-perigo: #dc2626;
     --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
     --raio: 10px;
@@ -21,6 +25,7 @@ body.modo-escuro {
     --cor-borda: #374151;
 }
 
+/* Reset básico pra zerar as margens chatas que o navegador coloca sozinho */
 * { 
     margin: 0;
     padding: 0; 
@@ -28,19 +33,44 @@ body.modo-escuro {
     font-family: 'Segoe UI', system-ui, sans-serif; 
 }
 
+/* O body agora é um 'flex container' vertical. 
+   O min-height: 100vh garante que ele sempre tenha o tamanho da tela,
+   fazendo o rodapé ficar no lugar certo mesmo com a lista vazia.
+*/
 body { 
     background-color: var(--cor-fundo); 
     color: var(--cor-texto); 
     line-height: 1.6; 
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    justify-content: flex-start;
 }
 
+/* ==========================================================================
+   LAYOUT E CONTAINERS
+   ========================================================================== */
+
+/* Limita a largura do conteúdo pra não ficar esticado demais em telas grandes */
 .container { 
     max-width: 1200px; 
     margin: 0 auto; 
     padding: 0 1.5rem; 
+    width: 100%;
 }
 
-/* Barra do topo - usando flexbox pra alinhamento */
+/* O main funciona como uma "mola" (flex: 1). Ele ocupa todo o espaço que sobra 
+   e empurra o footer lá pra baixo sem bagunçar os elementos internos. 
+*/
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: column; /* Força os filhos a ficarem um embaixo do outro */
+    align-items: stretch;   /* Garante que os elementos ocupem a largura do container */
+}
+
+/* Barra de navegação superior */
 .navbar { 
     background: var(--cor-superficie); 
     box-shadow: var(--sombra); 
@@ -48,6 +78,7 @@ body {
     margin-bottom: 2rem; 
 }
 
+/* Alinha o título de um lado e o painel de controle do outro */
 .nav-content { 
     display: flex; 
     justify-content: space-between; 
@@ -56,42 +87,32 @@ body {
     gap: 1rem; 
 }
 
+/* Agrupa o total de horas e o switch de tema */
 .nav-painel { 
     display: flex; 
     gap: 1rem; 
     align-items: center; 
 }
 
-#input-busca { 
-    padding: 0.5rem 1rem; 
-    border: 1px solid var(--cor-borda); 
-    border-radius: 20px; 
-    outline: none; 
-    transition: border-color 0.3s; 
-}
-
-#input-busca:focus { 
-    border-color: var(--cor-primaria); 
-}
-
-.stats-badge { 
-    background: #dbeafe; 
-    color: #1e40af; 
-    padding: 0.5rem 1rem; 
-    border-radius: 20px; 
-    font-weight: 500; 
-    font-size: 0.9rem; 
-}
-
+/* Barra de ferramentas abaixo do título principal */
 .toolbar { 
     display: flex; 
-    justify-content: space-between; 
+    justify-content: space-between; /* Título de um lado, botões do outro */
     align-items: center; 
     margin-bottom: 2rem; 
+    width: 100%;
 }
 
-/* Estilizando os botões pra não ficarem com a cara padrão e feia do HTML */
+.toolbar .nav-painel {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+/* ==========================================================================
+   COMPONENTES (BOTÕES, INPUTS E BADGES)
+   ========================================================================== */
 
+/* Estilização geral dos botões */
 .btn { 
     padding: 0.6rem 1.2rem; 
     border: none; 
@@ -111,6 +132,7 @@ body {
     transform: translateY(-1px); 
 }
 
+/* Botão vazado usado para registrar horas */
 .btn-outline { 
     background: transparent; 
     border: 1px solid var(--cor-borda); 
@@ -122,17 +144,46 @@ body {
     color: var(--cor-primaria); 
 }
 
+/* Classe utilitária pra ocupar a largura toda do card */
 .w-100 { 
     width: 100%; 
 }
 
-/* Aqui fica a lista de matérias. Esse grid já se arruma sozinho na tela */
+/* Campo de busca com cantos arredondados */
+#input-busca { 
+    padding: 0.5rem 1rem; 
+    border: 1px solid var(--cor-borda); 
+    border-radius: 20px; 
+    outline: none; 
+    transition: border-color 0.3s; 
+}
+
+#input-busca:focus { 
+    border-color: var(--cor-primaria); 
+}
+
+/* Badge que mostra o total de horas estudadas no topo */
+.stats-badge { 
+    background: #afc4df; 
+    color: #1e40af; 
+    padding: 0.5rem 1rem; 
+    border-radius: 20px; 
+    font-weight: 500; 
+    font-size: 0.9rem; 
+}
+
+/* ==========================================================================
+   GRID E CARDS DE DISCIPLINAS
+   ========================================================================== */
+
+/* Organiza os cards em grade que se ajusta sozinha conforme o tamanho da tela */
 .grade-cards { 
     display: grid; 
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); 
     gap: 1.5rem; 
 }
 
+/* Estilo de cada card de matéria */
 .card { 
     background: var(--cor-superficie); 
     border-radius: var(--raio); 
@@ -142,10 +193,10 @@ body {
     flex-direction: column; 
     position: relative; 
     overflow: hidden; 
-    animation: fadeIn 0.4s ease-out; 
+    animation: fadeIn 1s ease-out; 
 }
 
-/* Aquela barrinha azul no topo do card que vai enchendo conforme a gente estuda */
+/* Barrinha de progresso que fica no topo do card */
 .card-indicador { 
     position: absolute; 
     top: 0; 
@@ -155,6 +206,7 @@ body {
     transition: width 0.5s ease; 
 }
 
+/* Alinha a tag da área e os botões de ação (editar/excluir) */
 .card-cabecalho { 
     display: flex; 
     justify-content: space-between; 
@@ -163,6 +215,7 @@ body {
     margin-top: 0.5rem; 
 }
 
+/* Etiqueta pequena com o nome da área (Exatas, Humanas, etc) */
 .tag-area { 
     font-size: 0.75rem; 
     font-weight: bold; 
@@ -173,6 +226,7 @@ body {
     color: var(--cor-texto-suave); 
 }
 
+/* Estilo dos ícones de editar e excluir dentro do card */
 .acoes-card button { 
     background: none; 
     border: none; 
@@ -183,25 +237,14 @@ body {
     transition: color 0.2s; 
 }
 
-.acoes-card .btn-editar:hover { 
-    color: var(--cor-primaria); 
-}
+.acoes-card .btn-editar:hover { color: var(--cor-primaria); }
+.acoes-card .btn-excluir:hover { color: var(--cor-perigo); }
 
-.acoes-card .btn-excluir:hover { 
-    color: var(--cor-perigo); 
-}
+/* Informações de texto dentro do card */
+.card-info h3 { font-size: 1.25rem; margin-bottom: 0.2rem; }
+.card-info p { color: var(--cor-texto-suave); font-size: 0.9rem; margin-bottom: 1rem; }
 
-.card-info h3 { 
-    font-size: 1.25rem; 
-    margin-bottom: 0.2rem; 
-}
-
-.card-info p { 
-    color: var(--cor-texto-suave); 
-    font-size: 0.9rem; 
-    margin-bottom: 1rem; 
-}
-
+/* Texto que mostra as horas e a porcentagem embaixo */
 .progresso-texto { 
     display: flex; 
     justify-content: space-between; 
@@ -210,7 +253,11 @@ body {
     font-weight: 500; 
 }
 
-/* A janelinha de cadastro (Modal) que aparece por cima de tudo */
+/* ==========================================================================
+   MODAL (FORMULÁRIO DE CADASTRO)
+   ========================================================================== */
+
+/* A janela que abre por cima pra cadastrar/editar */
 dialog { 
     margin: auto; 
     border: none; 
@@ -219,8 +266,11 @@ dialog {
     width: 90%; 
     max-width: 500px; 
     box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); 
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
 }
 
+/* Escurece o fundo quando o modal tá aberto */
 dialog::backdrop { 
     background: rgba(0,0,0,0.5); 
     backdrop-filter: blur(3px); 
@@ -233,6 +283,7 @@ dialog::backdrop {
     margin-bottom: 1.5rem; 
 }
 
+/* Botão de 'X' pra fechar o modal */
 .btn-fechar { 
     background: none; 
     border: none; 
@@ -241,6 +292,7 @@ dialog::backdrop {
     color: var(--cor-texto-suave); 
 }
 
+/* Organização dos labels e campos do formulário */
 .grupo-input { 
     display: flex; 
     flex-direction: column; 
@@ -254,48 +306,74 @@ dialog::backdrop {
     gap: 1rem; 
 }
 
-label { 
-    font-size: 0.9rem; 
-    font-weight: 500; 
-}
+label { font-size: 0.9rem; font-weight: 500; }
 
 input, select { 
     padding: 0.6rem; 
     border: 1px solid var(--cor-borda); 
     border-radius: 6px; 
     outline: none; 
+    background: var(--cor-superficie);
+    color: var(--cor-texto);
 }
+
 input:focus, select:focus { 
     border-color: var(--cor-primaria); 
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); 
 }
 
+/* Diz para o modal usar a animação suave toda vez que for aberto */
+dialog[open] { 
+    animation: fadeIn 0.4s ease-out forwards; 
+}
+
+/* Faz o fundo escuro aparecer suavemente, em vez de piscar na tela */
+dialog[open]::backdrop {
+    animation: escurecerFundo 0.4s ease-out forwards;
+}
+
+/* animação só pro fundo escuro não usar o movimento de subidinha do fadeIn */
+@keyframes escurecerFundo {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ==========================================================================
+   ESTADOS VAZIOS E ANIMAÇÕES
+   ========================================================================== */
+
+/* Mensagem bonitinha que aparece quando não tem nada cadastrado */
 .estado-vazio { 
     text-align: center; 
-    padding: 4rem 2rem; 
+    padding: 5rem 0; 
     color: var(--cor-texto-suave); 
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza o ícone e o texto horizontalmente */
+    justify-content: center;
+    width: 100%;
 }
+
 .icone-vazio { 
     font-size: 4rem; 
     margin-bottom: 1rem; 
     opacity: 0.5; 
 }
-.escondido { 
-    display: none !important; 
-}
 
+/* Classe pra sumir com elementos via JavaScript */
+.escondido { display: none !important; }
+
+/* Animação suave pros cards aparecerem na tela */
 @keyframes fadeIn { 
-    from { 
-        opacity: 0; 
-        transform: translateY(10px); 
-    } 
-    to { 
-        opacity: 1; 
-        transform: translateY(0); 
-    } 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
 }
 
-/* Aquele botão de ligar/desligar o modo escuro com emoji. Deu um trabalhinho fazer a bolinha mexer! */
+/* ==========================================================================
+   SWITCH DE TEMA (MODO ESCURO)
+   ========================================================================== */
+
+/* Container do interruptor */
 .switch-tema { 
     position: relative; 
     display: inline-block; 
@@ -304,31 +382,24 @@ input:focus, select:focus {
     margin-left: 10px; 
 }
 
-.switch-tema input { 
-    opacity: 0; 
-    width: 0; 
-    height: 0; 
-}
+.switch-tema input { opacity: 0; width: 0; height: 0; }
 
+/* O fundo do switch */
 .slider-tema { 
     position: absolute; 
     cursor: pointer; 
-    top: 0; 
-    left: 0; 
-    right: 0; 
-    bottom: 0; 
+    top: 0; left: 0; right: 0; bottom: 0; 
     background-color: #cbd5e1; 
     transition: .4s; 
     border-radius: 30px; 
 }
 
+/* A bolinha branca que desliza */
 .slider-tema:before { 
     position: absolute; 
     content: ""; 
-    height: 22px; 
-    width: 22px; 
-    left: 4px; 
-    bottom: 4px; 
+    height: 22px; width: 22px; 
+    left: 4px; bottom: 4px; 
     background-color: white; 
     transition: .4s; 
     border-radius: 50%; 
@@ -336,14 +407,10 @@ input:focus, select:focus {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
 }
 
-.switch-tema input:checked + .slider-tema { 
-    background-color: var(--cor-primaria); 
-}
+.switch-tema input:checked + .slider-tema { background-color: var(--cor-primaria); }
+.switch-tema input:checked + .slider-tema:before { transform: translateX(30px); }
 
-.switch-tema input:checked + .slider-tema:before { 
-    transform: translateX(30px); 
-}
-
+/* Posicionamento dos emojis de Sol e Lua */
 .switch-tema .icone { 
     position: absolute; 
     top: 50%; 
@@ -353,10 +420,23 @@ input:focus, select:focus {
     user-select: none; 
 }
 
-.switch-tema .sol { 
-    right: 8px; 
-}
+.switch-tema .sol { right: 8px; }
+.switch-tema .lua { left: 8px; }
 
-.switch-tema .lua { 
-    left: 8px; 
+/* ==========================================================================
+   RODAPÉ (FOOTER)
+   ========================================================================== */
+
+/* Configuração do rodapé de identificação. 
+   O 'margin-top: 2rem' dá um respiro pros cards não colarem nele.
+*/
+.rodape-autor { 
+    text-align: center; 
+    padding: 1.5rem 1rem; 
+    margin-top: 2rem; 
+    color: var(--cor-texto-suave); 
+    border-top: 1px solid var(--cor-borda); 
+    font-size: 0.85rem; 
+    font-weight: 500;
+    background: var(--cor-superficie);
 }

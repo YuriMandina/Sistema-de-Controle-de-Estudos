@@ -11,10 +11,12 @@
     <header class="navbar">
         <div class="container nav-content">
             <h1>Controle de Estudos</h1>
+            
             <div class="nav-painel">
                 <div class="stats-badge">
                     Total: <strong id="total-horas-globais">0</strong> horas
                 </div>
+
                 <label class="switch-tema" for="checkbox-tema" title="Alternar Modo Claro/Escuro">
                     <input type="checkbox" id="checkbox-tema">
                     <span class="slider-tema"></span>
@@ -26,9 +28,13 @@
     </header>
 
     <main class="container">
+        
         <section class="toolbar">
             <h2>Meu Progresso</h2>
-            <button id="btn-novo" class="btn btn-primario">+ Nova Disciplina</button>
+            <div class="nav-painel">
+                <input type="text" id="input-busca" placeholder="Buscar disciplina...">
+                <button id="btn-novo" class="btn btn-primario">+ Nova Disciplina</button>
+            </div>
         </section>
 
         <section id="lista-vazia" class="estado-vazio escondido">
@@ -38,7 +44,8 @@
         </section>
 
         <section id="grade-disciplinas" class="grade-cards">
-            </section>
+        </section>
+        
     </main>
 
     <dialog id="modal-cadastro">
@@ -52,23 +59,24 @@
             
             <div class="grupo-input">
                 <label for="nome">Nome da Disciplina</label>
-                <input type="text" id="nome" required placeholder="Preencha o nome da disciplina">
+                <input type="text" id="nome" required placeholder="Ex: Cálculo I">
             </div>
 
             <div class="grupo-input">
                 <label for="professor">Professor Responsável</label>
-                <input type="text" id="professor" required placeholder="Preencha o nome do professor">
+                <input type="text" id="professor" required placeholder="Nome do professor">
             </div>
 
             <div class="linha-inputs">
                 <div class="grupo-input">
-                    <label for="carga">Carga Horária</label>
+                    <label for="carga">Carga Horária (horas)</label>
                     <input type="number" id="carga" min="1" required placeholder="Ex: 80">
                 </div>
+                
                 <div class="grupo-input">
                     <label for="area">Área do Conhecimento</label>
                     <select id="area" required>
-                        <option value="" disabled selected>Selecione...</option>
+                        <option value="" disabled selected>Escolha...</option>
                         <option value="Exatas">Exatas</option>
                         <option value="Humanas">Humanas</option>
                         <option value="Biológicas">Biológicas</option>
@@ -82,6 +90,10 @@
             </div>
         </form>
     </dialog>
+
+    <footer class="rodape-autor">
+        <p>Yuri Felippe Portela de Assis Mandina - RU 5473356</p>
+    </footer>
 
     <script src="./assets/js/script.js"></script>
 </body>

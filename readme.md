@@ -1,62 +1,92 @@
-# Documentação do Projeto Controle de Estudos
+# Documentação do Projeto: Controle de Estudos
 
-Este é um sistema de front-end simples que eu criei para cadastrar disciplinas da faculdade e controlar a carga horária que eu já estudei. O projeto foi construído usando apenas HTML, CSS e JavaScript puro, sem frameworks externos.
-
-## Como os dados são salvos (Banco de Dados)
-
-O sistema não usa um servidor externo. Ele usa o `localStorage` do navegador para guardar as informações. 
-* Ele tenta carregar os dados usando `JSON.parse(localStorage.getItem('banco_estudos'))`.
-* Se não tiver nada, ele cria um array vazio `[]`.
-* Toda vez que uma matéria é criada, editada ou a hora estudada muda, a função `salvarNoBanco()` transforma o array em texto com `JSON.stringify` e guarda no armazenamento local de novo.
-
-## Como as funções principais funcionam no `script.js`
-
-* **Cadastrar ou Editar (Interceptando o Formulário):** Quando clico em salvar, o `evento.preventDefault()` bloqueia o recarregamento da página. O sistema olha pro input escondido `id-disciplina`. Se tiver um ID lá, ele atualiza a matéria existente. Se estiver vazio, ele cria um objeto `novaDisciplina`, gerando um ID único usando o `Date.now()` (o tempo atual), e coloca as `horasEstudadas` no 0.
-* **mostrarNaTela():** Limpa a tela e varre o array de matérias. Calcula a porcentagem de conclusão (`horas / cargaTotal * 100`) para a barrinha azul do topo e injeta o HTML direto usando `innerHTML`. Se o array estiver vazio, ele mostra a tela de "lista vazia".
-* **registrarHora(id):** Recebe o ID do card clicado, procura no array com `.find`, e se a hora estudada for menor que a carga total, soma +1 e salva no banco. Se já bateu a meta, ele solta um `alert` e bloqueia.
-* **deletarDisciplina(id):** Pede confirmação com um `confirm` e, se aceito, usa o `.filter` para recriar a lista tirando fora a matéria que tem o ID selecionado.
-* **Modo Escuro:** O checkbox (botão de sol/lua) usa o `classList.toggle('modo-escuro')` no `body` da página pra trocar as variáveis de cor no CSS. Ele salva a preferência no banco local pra página já carregar escura da próxima vez, sem cegar o usuário.
+Este é um sistema de front-end desenvolvido para organizar disciplinas acadêmicas e monitorar o progresso de estudos de forma visual. O projeto foi construído utilizando HTML, CSS e JavaScript puro, com foco em performance e persistência de dados local.
 
 ---
 
-## Checklist de Testes Funcionais
+## Arquitetura e Organização
 
-Para testar se tudo está funcionando, abra o `index.html` e siga estes passos:
+Para garantir um código limpo e de fácil manutenção, a estrutura foi dividida em blocos de responsabilidade:
 
-- [ ] **1. Tela Vazia:** Ao abrir pela primeira vez, a div `lista-vazia` deve aparecer e o total de horas no topo deve ser 0. O `localStorage` deve estar limpo.
+* **Semântica HTML5:** Estruturação utilizando tags nativas (`header`, `main`, `section`, `footer`) para melhor indexação e acessibilidade.
+* **Layout Adaptável:** O CSS utiliza Grid Layout para a malha de cards e Flexbox para o alinhamento de componentes internos e posicionamento dinâmico do rodapé.
+* **Modularização Lógica:** O JavaScript é organizado por setores: Gestão de Dados, Renderização de UI, Controle de Modais e Motor de Temas.
+
+---
+
+## Fluxo de Persistência (Local Storage)
+
+O sistema opera de forma independente de servidores, utilizando o armazenamento local do navegador para garantir que os dados não sejam perdidos ao fechar a página:
+
+* **Ciclo de Vida:** Ao carregar a página, o sistema recupera a chave `banco_estudos`. Caso esteja vazia, o estado inicial é definido como um array vazio.
+* **Sincronização:** Qualquer interação que altere o estado das disciplinas aciona automaticamente a serialização dos dados para JSON, mantendo o `localStorage` sempre atualizado com a última ação do usuário.
+
+---
+
+## Funcionamento dos Módulos Principais
+
+### 1. Inteligência de Cadastro e Edição
+O sistema utiliza um formulário híbrido dentro de um elemento `<dialog>`. A distinção entre uma nova inserção e uma atualização de dados existentes é feita por um ID de controle:
+* **Novo Registro:** O sistema gera um *timestamp* único (`Date.now()`) que servirá como chave primária da disciplina.
+* **Edição:** Ao clicar em editar, os dados são mapeados de volta para o formulário. No salvamento, o sistema localiza o ID correspondente no array e sobrescreve apenas os campos alterados, preservando o histórico de horas.
+
+### 2. Motor de Renderização Dinâmica
+A função `mostrarNaTela()` atua como o núcleo da interface. Ela processa o array de dados e gera o HTML dos cards em tempo real. Durante este processo:
+* **Cálculo de Progresso:** É realizada uma operação aritmética (`horas / carga * 100`) para definir dinamicamente a largura da barra de progresso (`card-indicador`).
+* **Contadores Globais:** O sistema realiza a soma de todas as horas do array para atualizar o painel de estatísticas no cabeçalho.
+
+### 3. Sistema de Registro e Travas de Segurança
+A função de incremento de horas possui uma camada de validação lógica. Antes de persistir o dado, o sistema verifica se a `horaEstudada` é inferior à `cargaTotal`. Essa trava impede inconsistências visuais (como a barra de progresso ultrapassar 100% do card).
+
+### 4. Alternador de Temas
+O sistema de temas funciona através da manipulação de variáveis CSS (CSS Variables). Ao alternar o switch, o JavaScript injeta a classe `.modo-escuro` no `body`, que altera instantaneamente os valores de cores de fundo, texto e superfícies em toda a aplicação.
+
+---
+
+## Fluxo de Utilização
+
+Abaixo, descrevo a jornada de uso do sistema, demonstrando como as funcionalidades interagem com o usuário:
+
+### 1 Inicialização do Sistema
+Ao acessar a aplicação pela primeira vez, o sistema valida a ausência de dados no `localStorage` e apresenta uma tela de estado vazio. Essa interface orienta o usuário a iniciar sua organização clicando no botão de cadastro.
 
 ![image1](./assets/images/image1.png)
 
-- [ ] **2. Criar Matéria:** Clique em "+ Nova Disciplina", preencha os inputs e salve. O modal deve fechar e o card deve aparecer na tela com a barra de progresso em 0%.
+### 2: Registro de Disciplinas
+Ao acionar o comando de "Nova Disciplina", um modal de captura de dados é exibido. Aqui, o usuário define o nome, professor, carga horária e a área do conhecimento. Ao salvar, o JavaScript processa essas informações, fecha o modal e renderiza o novo card instantaneamente.
 
 ![image2](./assets/images/image2.png)
 
-- [ ] **3. Somar Horas:** Clique em "Registrar +1 Hora". O texto no card e a barrinha azul devem atualizar na hora. O total de horas no cabeçalho também tem que subir.
+### 3: Controle de Progresso Diário
+Com os cards na tela, o usuário pode interagir clicando em "Registrar +1 Hora". A cada clique, o sistema atualiza o contador individual da matéria, expande a barra de progresso visual e recalcula o total de horas globais exibido no cabeçalho.
 
 ![image3](./assets/images/image3.png)
 
-- [ ] **4. Trava de Limite:** Tente clicar em "+1 Hora" além da carga total da matéria. O sistema tem que bloquear e soltar o `alert('Você já completou a carga horária dessa matéria!')`. A barra não pode passar de 100%.
+### 4: Gestão de Limites e Metas
+Caso o usuário atinja a carga horária total planejada para uma disciplina, o sistema ativa uma trava de segurança. Um alerta é exibido informando que a meta foi batida, impedindo que o progresso ultrapasse os 100% da capacidade da matéria.
 
 ![image4](./assets/images/image4.png)
 
-- [ ] **5. Editar Dados:** Clique no botão do lápis. O modal deve abrir com os inputs já preenchidos. Mude um valor e salve. O card tem que atualizar os dados sem criar uma matéria duplicada na tela.
+### 5: Manutenção e Ajustes
+A qualquer momento, o usuário pode clicar no ícone de edição para ajustar informações ou no ícone de exclusão para remover uma disciplina. O sistema solicita confirmação antes de apagar qualquer dado permanentemente do banco local.
 
 ![image5](./assets/images/image5.png)
 
 ![image6](./assets/images/image6.png)
 
-- [ ] **6. Excluir:** Clique no botão de "X". Confirme no alerta do navegador. O card tem que sumir da tela e ser apagado do `localStorage`.
-
 ![image7](./assets/images/image7.png)
+
+### 6: Personalização da Experiência
+Para maior conforto visual, o usuário pode alternar para o Modo Escuro. O sistema aplica as novas propriedades de cor e garante que essa escolha seja lembrada em todos os acessos futuros, mantendo a consistência da interface. Fiz todo o tutoriala apresentação no modo escuro por achar mais confortável, mas segue como fica no modo claro:
 
 ![image8](./assets/images/image8.png)
 
-- [ ] **7. Modo Escuro:** Clique no switch lá no topo. A tela deve ficar com o fundo escuro. Dê um F5 (recarregar a página) e valide se ela continua escura, provando que leu o `localStorage.getItem('tema_escolhido')`.
+### 7: Busca e Filtro de Disciplinas
+Para grades curriculares extensas, o sistema conta com um motor de busca em tempo real. Ao digitar qualquer termo no input superior, o JavaScript filtra instantaneamente a lista de renderização e exibe apenas os cards correspondentes na tela, otimizando a navegação.
 
 ![image9](./assets/images/image9.png)
 
 ![image10](./assets/images/image10.png)
 
-![image11](./assets/images/image11.png)
-
 ---
+**Desenvolvido por:** Yuri Felippe Portela de Assis Mandina - RU 5473356

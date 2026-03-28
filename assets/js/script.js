@@ -1,14 +1,32 @@
-// Pegando os elementos do HTML que vou precisar
+/* ==========================================================================
+   CONFIGURAÇÕES INICIAIS E VARIÁVEIS GLOBAIS
+   ========================================================================== */
+
+// Pegando os elementos do HTML que vou precisar manipular com o JS
 const formCadastro = document.getElementById('form-disciplina');
 const gradeDisciplinas = document.getElementById('grade-disciplinas');
 const modal = document.getElementById('modal-cadastro');
 const inputIdEdicao = document.getElementById('id-disciplina');
+const inputBusca = document.getElementById('input-busca');
+const checkboxTema = document.getElementById('checkbox-tema');
+const btnNovo = document.getElementById('btn-novo');
 
-// Tenta carregar os dados salvos, se não tiver nada cria um array vazio
+// Tenta carregar os dados salvos no navegador, se não tiver nada (primeiro acesso), cria um array vazio
 let listaDisciplinas = JSON.parse(localStorage.getItem('banco_estudos')) || [];
 
+
+/* ==========================================================================
+   GERENCIAMENTO DAS DISCIPLINAS (CRUD)
+   ========================================================================== */
+
+// Essa função salva o nosso array de matérias "dentro" do navegador pra não perder ao dar F5
+function salvarNoBanco() {
+    localStorage.setItem('banco_estudos', JSON.stringify(listaDisciplinas));
+}
+
+// Escuta o envio do formulário (tanto pra cadastro novo quanto pra edição)
 formCadastro.addEventListener('submit', function(evento) {
-    evento.preventDefault(); // Pra página não recarregar do nada
+    evento.preventDefault(); // Impede a página de recarregar e perder os dados
 
     const nome = document.getElementById('nome').value;
     const professor = document.getElementById('professor').value;
@@ -17,7 +35,7 @@ formCadastro.addEventListener('submit', function(evento) {
     const idEdicao = inputIdEdicao.value;
 
     if (idEdicao != '') {
-        // Editando uma disciplina que já existe
+        // Lógica de Edição: procura a matéria pelo ID e atualiza os campos
         for (let i = 0; i < listaDisciplinas.length; i++) {
             if (listaDisciplinas[i].id == idEdicao) {
                 listaDisciplinas[i].nome = nome;
@@ -27,9 +45,9 @@ formCadastro.addEventListener('submit', function(evento) {
             }
         }
     } else {
-        // Criando uma disciplina nova
+        // Lógica de Cadastro: cria um objeto novo com ID único baseado no tempo (timestamp)
         const novaDisciplina = {
-            id: Date.now(), // uso o tempo atual como ID pra não repetir
+            id: Date.now(), 
             nome: nome,
             professor: professor,
             cargaTotal: cargaTotal,
@@ -39,28 +57,25 @@ formCadastro.addEventListener('submit', function(evento) {
         listaDisciplinas.push(novaDisciplina);
     }
 
+    // Limpa tudo e atualiza a tela
     salvarNoBanco();
     modal.close();
     formCadastro.reset();
     inputIdEdicao.value = ''; 
-    mostrarNaTela(); // atualiza a tela
+    mostrarNaTela(); 
 });
 
-function salvarNoBanco() {
-    localStorage.setItem('banco_estudos', JSON.stringify(listaDisciplinas));
-}
-
-// Função pra apagar a matéria
+// Função pra apagar a matéria da lista
 function deletarDisciplina(id) {
-    if (confirm('Tem certeza que quer apagar?')) {
-        // Filtra o array tirando o id que eu passei
+    if (confirm('Tem certeza que quer apagar essa disciplina?')) {
+        // O filter cria uma lista nova sem o ID que a gente quer deletar
         listaDisciplinas = listaDisciplinas.filter(d => d.id != id);
         salvarNoBanco();
         mostrarNaTela();
     }
 }
 
-// Função pra preencher o formulário com os dados da matéria pra editar
+// Pega os dados da matéria e joga de volta no formulário pra gente mudar
 function editarDisciplina(id) {
     const d = listaDisciplinas.find(d => d.id == id);
     
@@ -74,7 +89,7 @@ function editarDisciplina(id) {
     modal.showModal();
 }
 
-// Aumenta a hora estudada
+// Lógica de progresso: aumenta 1 hora toda vez que clica no botão do card
 function registrarHora(id) {
     const d = listaDisciplinas.find(d => d.id == id);
     if (d.horasEstudadas < d.cargaTotal) {
@@ -82,47 +97,73 @@ function registrarHora(id) {
         salvarNoBanco();
         mostrarNaTela();
     } else {
-        alert('Você já completou a carga horária dessa matéria!');
+        alert('Boa! Você já completou a carga horária dessa matéria!');
     }
 }
 
-// Função principal que desenha os cards no HTML
+
+/* ==========================================================================
+   SISTEMA DE BUSCA E FILTRO
+   ========================================================================== */
+
+// Fica de olho em cada letra que o usuário digita na barra de busca
+if (inputBusca) {
+    inputBusca.addEventListener('input', function() {
+        mostrarNaTela(); // Redesenha a tela filtrando em tempo real
+    });
+}
+
+
+/* ==========================================================================
+   RENDERIZAÇÃO (DESENHAR NA TELA)
+   ========================================================================== */
+
+// Essa é a função "cérebro" que monta os cards e calcula os totais
 function mostrarNaTela() {
-    gradeDisciplinas.innerHTML = ''; // Limpa a tela antes de desenhar
-    let totalHoras = 0;
+    gradeDisciplinas.innerHTML = ''; // Limpa a grade pra não duplicar tudo
+    
+    // Pega o que foi digitado na busca (em minúsculo pra não dar erro de diferença)
+    const termoBusca = inputBusca ? inputBusca.value.toLowerCase() : '';
 
-    // Seleciona a div de estado vazio uma única vez para otimizar o processamento
+    // Filtra a lista principal baseado no nome da matéria
+    const listaFiltrada = listaDisciplinas.filter(function(disciplina) {
+        return disciplina.nome.toLowerCase().includes(termoBusca);
+    });
+
+    // Se não tiver nada pra mostrar, exibe aquela mensagem de "lista vazia"
     const divListaVazia = document.getElementById('lista-vazia');
-
-    // Verifica se o tamanho do array de disciplinas é igual a zero
-    if (listaDisciplinas.length === 0) {
-        // Se estiver vazio, remove a classe 'escondido' para exibir a div com a mensagem na tela
+    if (listaFiltrada.length === 0) {
         divListaVazia.classList.remove('escondido');
     } else {
-        // Se tiver itens no array, adiciona a classe 'escondido' para ocultar a mensagem da tela
         divListaVazia.classList.add('escondido');
     }
 
-    // Passa por cada disciplina e cria o HTML do card
-    for (let i = 0; i < listaDisciplinas.length; i++) {
-        let disciplina = listaDisciplinas[i];
-        totalHoras = totalHoras + disciplina.horasEstudadas;
+    // Calcula o total de horas de TODAS as matérias pro cabeçalho
+    let totalHoras = 0;
+    for (let j = 0; j < listaDisciplinas.length; j++) {
+        totalHoras += listaDisciplinas[j].horasEstudadas;
+    }
+    document.getElementById('total-horas-globais').textContent = totalHoras;
 
-        // Calcula a porcentagem pra barra de progresso
+    // Passa por cada disciplina filtrada e monta o HTML do card
+    for (let i = 0; i < listaFiltrada.length; i++) {
+        let disciplina = listaFiltrada[i];
+
+        // Regra de três básica pra saber a porcentagem do progresso
         let percentual = 0;
         if (disciplina.cargaTotal > 0) {
             percentual = Math.round((disciplina.horasEstudadas / disciplina.cargaTotal) * 100);
         }
 
-        // Uso innerHTML direto, é mais fácil que criar os elementos um por um
+        // Injeta o HTML do card dentro da grade
         gradeDisciplinas.innerHTML += `
             <article class="card">
                 <div class="card-indicador" style="width: ${percentual}%"></div>
                 <div class="card-cabecalho">
                     <span class="tag-area">${disciplina.area}</span>
                     <div class="acoes-card">
-                        <button class="btn-editar" onclick="editarDisciplina(${disciplina.id})">&#9998;</button>
-                        <button class="btn-excluir" onclick="deletarDisciplina(${disciplina.id})">&times;</button>
+                        <button class="btn-editar" onclick="editarDisciplina(${disciplina.id})" title="Editar">&#9998;</button>
+                        <button class="btn-excluir" onclick="deletarDisciplina(${disciplina.id})" title="Excluir">&times;</button>
                     </div>
                 </div>
                 <div class="card-info">
@@ -137,46 +178,54 @@ function mostrarNaTela() {
             </article>
         `;
     }
-
-    document.getElementById('total-horas-globais').textContent = totalHoras;
 }
 
-// Configurando os botões de abrir e fechar o modal
-document.getElementById('btn-novo').addEventListener('click', function() {
-    formCadastro.reset();
-    inputIdEdicao.value = '';
-    document.getElementById('titulo-modal').textContent = 'Cadastrar Disciplina';
-    modal.showModal();
-});
 
-document.getElementById('btn-fechar-modal').addEventListener('click', function() {
-    modal.close();
-});
+/* ==========================================================================
+   CONTROLE DO MODAL E INTERFACE
+   ========================================================================== */
 
-// Chama a função logo que abre a página pra mostrar os dados salvos
-mostrarNaTela();
-
-
-// --------- Configuração do Modo Escuro --------- //
-
-const checkboxTema = document.getElementById('checkbox-tema');
-
-// Verifica se o usuário já tinha deixado no modo escuro antes
-if (localStorage.getItem('tema_escolhido') == 'escuro') {
-    document.body.classList.add('modo-escuro');
-    if (checkboxTema) checkboxTema.checked = true; // Deixa o switch ativado
-}
-
-if (checkboxTema) {
-    // Quando marca ou desmarca o checkbox, liga ou desliga a classe
-    checkboxTema.addEventListener('change', function() {
-        document.body.classList.toggle('modo-escuro');
+// Botão que abre o formulário de cadastro limpo
+if (btnNovo) {
+    btnNovo.addEventListener('click', function() {
+        formCadastro.reset(); // Limpa os campos
+        inputIdEdicao.value = ''; // Garante que não há ID de edição
+        document.getElementById('titulo-modal').textContent = 'Cadastrar Disciplina';
         
-        // Salva a preferência pra não perder quando atualizar a página
-        if (document.body.classList.contains('modo-escuro')) {
-            localStorage.setItem('tema_escolhido', 'escuro');
+        // O método .showModal() é nativo da tag <dialog>
+        if (modal) {
+            modal.showModal();
         } else {
-            localStorage.setItem('tema_escolhido', 'claro');
+            console.error("Erro: O elemento modal-cadastro não foi encontrado no HTML.");
         }
     });
 }
+
+// Botão de fechar (o X do modal)
+const btnFechar = document.getElementById('btn-fechar-modal');
+if (btnFechar) {
+    btnFechar.addEventListener('click', () => modal.close());
+}
+
+/* ==========================================================================
+   MODO ESCURO (DARK MODE)
+   ========================================================================== */
+
+// Verifica se o usuário já curte o modo escuro (checa o que ficou salvo)
+if (localStorage.getItem('tema_escolhido') == 'escuro') {
+    document.body.classList.add('modo-escuro');
+    if (checkboxTema) checkboxTema.checked = true;
+}
+
+// Troca o tema e salva a preferência pra não esquecer no próximo acesso
+if (checkboxTema) {
+    checkboxTema.addEventListener('change', function() {
+        document.body.classList.toggle('modo-escuro');
+        
+        const tema = document.body.classList.contains('modo-escuro') ? 'escuro' : 'claro';
+        localStorage.setItem('tema_escolhido', tema);
+    });
+}
+
+/* Inicia a tela desenhando o que tiver no banco de dados assim que o arquivo carrega */
+mostrarNaTela();
