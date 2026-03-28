@@ -440,3 +440,40 @@ dialog[open]::backdrop {
     font-weight: 500;
     background: var(--cor-superficie);
 }
+
+/* ==========================================================================
+   RESPONSIVIDADE
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    /* Centraliza os elementos do cabeçalho */
+    .nav-content {
+        justify-content: center;
+        text-align: center;
+    }
+
+    /* Muda a toolbar de linha pra coluna */
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch; /* Faz os elementos esticarem até as bordas */
+        gap: 1rem;
+        text-align: center;
+    }
+
+    /* Faz a barra de busca e o botão empilharem e ocuparem 100% da tela */
+    .toolbar .nav-painel {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    /* Ajusta o tamanho dos inputs e botões para ficarem melhores para o toque */
+    .toolbar #input-busca,
+    .toolbar .btn {
+        width: 100%;
+    }
+
+    /* Reduz um pouco as margens do estado vazio para caber melhor na tela */
+    .estado-vazio {
+        padding: 3rem 1rem;
+    }
+}
