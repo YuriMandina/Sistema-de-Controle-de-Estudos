@@ -34,8 +34,10 @@ formCadastro.addEventListener('submit', function(evento) {
     const area = document.getElementById('area').value;
     const idEdicao = inputIdEdicao.value;
 
+    let idParaAnimar = null; // Começa nulo
+
     if (idEdicao != '') {
-        // Lógica de Edição: procura a matéria pelo ID e atualiza os campos
+        // Lógica de Edição: atualiza e não anima nada
         for (let i = 0; i < listaDisciplinas.length; i++) {
             if (listaDisciplinas[i].id == idEdicao) {
                 listaDisciplinas[i].nome = nome;
@@ -44,8 +46,9 @@ formCadastro.addEventListener('submit', function(evento) {
                 listaDisciplinas[i].area = area;
             }
         }
+        idParaAnimar = null; // Na edição, a gente não quer que pule
     } else {
-        // Lógica de Cadastro: cria um objeto novo com ID único baseado no tempo (timestamp)
+        // Lógica de Cadastro: cria a matéria e guarda o ID dela
         const novaDisciplina = {
             id: Date.now(), 
             nome: nome,
@@ -55,14 +58,16 @@ formCadastro.addEventListener('submit', function(evento) {
             horasEstudadas: 0 
         };
         listaDisciplinas.push(novaDisciplina);
+        idParaAnimar = novaDisciplina.id; // Pega o id para animar
     }
 
-    // Limpa tudo e atualiza a tela
     salvarNoBanco();
     modal.close();
     formCadastro.reset();
     inputIdEdicao.value = ''; 
-    mostrarNaTela(); 
+    
+    // Manda desenhar a tela, avisando que é pra animar só esse ID (ou null, se for edição)
+    mostrarNaTela(idParaAnimar); 
 });
 
 // Função pra apagar a matéria da lista
@@ -71,7 +76,7 @@ function deletarDisciplina(id) {
         // O filter cria uma lista nova sem o ID que a gente quer deletar
         listaDisciplinas = listaDisciplinas.filter(d => d.id != id);
         salvarNoBanco();
-        mostrarNaTela();
+        mostrarNaTela(false);
     }
 }
 
@@ -95,7 +100,7 @@ function registrarHora(id) {
     if (d.horasEstudadas < d.cargaTotal) {
         d.horasEstudadas++;
         salvarNoBanco();
-        mostrarNaTela();
+        mostrarNaTela(false);
     } else {
         alert('Boa! Você já completou a carga horária dessa matéria!');
     }
@@ -109,7 +114,7 @@ function registrarHora(id) {
 // Fica de olho em cada letra que o usuário digita na barra de busca
 if (inputBusca) {
     inputBusca.addEventListener('input', function() {
-        mostrarNaTela(); // Redesenha a tela filtrando em tempo real
+        mostrarNaTela(false); // Redesenha a tela filtrando em tempo real mas sem o fadesin
     });
 }
 
@@ -119,7 +124,7 @@ if (inputBusca) {
    ========================================================================== */
 
 // Essa é a função "cérebro" que monta os cards e calcula os totais
-function mostrarNaTela() {
+function mostrarNaTela(alvoAnimacao = 'todos') {
     gradeDisciplinas.innerHTML = ''; // Limpa a grade pra não duplicar tudo
     
     // Pega o que foi digitado na busca (em minúsculo pra não dar erro de diferença)
@@ -155,9 +160,14 @@ function mostrarNaTela() {
             percentual = Math.round((disciplina.horasEstudadas / disciplina.cargaTotal) * 100);
         }
 
+        let classeAnimacao = '';
+        if (alvoAnimacao === 'todos' || alvoAnimacao === disciplina.id) {
+            classeAnimacao = 'animacao-entrada';
+        }
+
         // Injeta o HTML do card dentro da grade
         gradeDisciplinas.innerHTML += `
-            <article class="card">
+            <article class="card ${classeAnimacao}">
                 <div class="card-indicador" style="width: ${percentual}%"></div>
                 <div class="card-cabecalho">
                     <span class="tag-area">${disciplina.area}</span>

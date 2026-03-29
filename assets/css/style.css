@@ -25,7 +25,7 @@ body.modo-escuro {
     --cor-borda: #374151;
 }
 
-/* Reset básico pra zerar as margens chatas que o navegador coloca sozinho */
+/* Reset básico pra zerar as margens que o navegador coloca por padrão */
 * { 
     margin: 0;
     padding: 0; 
@@ -60,7 +60,7 @@ body {
     width: 100%;
 }
 
-/* O main funciona como uma "mola" (flex: 1). Ele ocupa todo o espaço que sobra 
+/* O main funciona como uma mola (flex: 1). Ele ocupa todo o espaço que sobra 
    e empurra o footer lá pra baixo sem bagunçar os elementos internos. 
 */
 main {
@@ -193,7 +193,6 @@ main {
     flex-direction: column; 
     position: relative; 
     overflow: hidden; 
-    animation: fadeIn 1s ease-out; 
 }
 
 /* Barrinha de progresso que fica no topo do card */
@@ -283,7 +282,7 @@ dialog::backdrop {
     margin-bottom: 1.5rem; 
 }
 
-/* Botão de 'X' pra fechar o modal */
+/* Botão de X pra fechar o modal */
 .btn-fechar { 
     background: none; 
     border: none; 
@@ -342,7 +341,7 @@ dialog[open]::backdrop {
    ESTADOS VAZIOS E ANIMAÇÕES
    ========================================================================== */
 
-/* Mensagem bonitinha que aparece quando não tem nada cadastrado */
+/* Mensagem que aparece quando não tem nada cadastrado */
 .estado-vazio { 
     text-align: center; 
     padding: 5rem 0; 
@@ -365,8 +364,13 @@ dialog[open]::backdrop {
 
 /* Animação suave pros cards aparecerem na tela */
 @keyframes fadeIn { 
-    from { opacity: 0; transform: translateY(10px); } 
+    from { opacity: 0; transform: translateY(600px); } 
     to { opacity: 1; transform: translateY(0); } 
+}
+
+/* Animação suave de modais e cards */
+.animacao-entrada {
+    animation: fadeIn 0.8s ease-out forwards; 
 }
 
 /* ==========================================================================

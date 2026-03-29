@@ -2,10 +2,12 @@
 
 Este é um sistema de front-end desenvolvido para organizar disciplinas acadêmicas e monitorar o progresso de estudos de forma visual. O projeto foi construído utilizando HTML, CSS e JavaScript puro, com foco em performance e persistência de dados local.
 
-Acesse o projeto também pelo deploy no Github Pages:
+
+## Aplicação Online
+
+Acesse a versão em produção do projeto com deploy no GitHub Pages:
 [Sistema de Controle de Estudos](https://yurimandina.github.io/Sistema-de-Controle-de-Estudos/)
 
----
 
 ## Arquitetura e Organização
 
@@ -15,7 +17,7 @@ Para garantir um código limpo e de fácil manutenção, a estrutura foi dividid
 * **Layout Adaptável:** O CSS utiliza Grid Layout para a malha de cards e Flexbox para o alinhamento de componentes internos e posicionamento dinâmico do rodapé.
 * **Modularização Lógica:** O JavaScript é organizado por setores: Gestão de Dados, Renderização de UI, Controle de Modais e Motor de Temas.
 
----
+
 
 ## Fluxo de Persistência (Local Storage)
 
@@ -24,7 +26,6 @@ O sistema opera de forma independente de servidores, utilizando o armazenamento 
 * **Ciclo de Vida:** Ao carregar a página, o sistema recupera a chave `banco_estudos`. Caso esteja vazia, o estado inicial é definido como um array vazio.
 * **Sincronização:** Qualquer interação que altere o estado das disciplinas aciona automaticamente a serialização dos dados para JSON, mantendo o `localStorage` sempre atualizado com a última ação do usuário.
 
----
 
 ## Funcionamento dos Módulos Principais
 
@@ -44,7 +45,6 @@ A função de incremento de horas possui uma camada de validação lógica. Ante
 ### 4. Alternador de Temas
 O sistema de temas funciona através da manipulação de variáveis CSS (CSS Variables). Ao alternar o switch, o JavaScript injeta a classe `.modo-escuro` no `body`, que altera instantaneamente os valores de cores de fundo, texto e superfícies em toda a aplicação.
 
----
 
 ## Fluxo de Utilização
 
